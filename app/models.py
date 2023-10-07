@@ -5,14 +5,11 @@ from django.contrib.auth import get_user_model
 MyUser = get_user_model()
 
 
-class City(models.Model):
-    name = models.CharField(max_length=255, default="Бишкек")
-    timezone = models.CharField(max_length=50, default="GMT+6")
+class UserSettings(models.Model):
+    user = models.OneToOneField(MyUser, on_delete=models.CASCADE)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, default=42.87)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, default=74.59)
-
-    def __str__(self):
-        return self.name
+    calculation_method = models.CharField(max_length=50)
 
 
 # Модель для записей в дневнике

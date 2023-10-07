@@ -1,16 +1,8 @@
 from rest_framework import serializers
-from .models import City, PrayerTime
+from .models import PrayerTime  # Замените '.models' на путь к вашей модели
 
 
-# Сериализатор для модели City
-class CitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = City
-        fields = '__all__'
-
-
-# Сериализатор для модели PrayerTime
 class PrayerTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrayerTime
-        fields = '__all__'
+        fields = '__all__'  # Включить все поля модели PrayerTime
