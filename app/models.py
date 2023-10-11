@@ -14,10 +14,13 @@ class DiaryEntry(models.Model):
 
 # Модель для задач ToDo
 class ToDoTask(models.Model):
+    title = models.CharField(max_length=125)
     user = models.ForeignKey(MyUser, on_delete=models.PROTECT)
     task_text = models.CharField(max_length=255)
-    status = models.BooleanField(default=False)
+    is_done = models.BooleanField(default=False)
     due_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     prayer_time = models.TimeField()  # Поле для времени намаза
 
 

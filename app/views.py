@@ -2,13 +2,13 @@ from rest_framework import generics
 from rest_framework.response import Response
 from datetime import datetime
 import praytimes
-from .models import PrayerTime  # Импортируйте вашу модель
-
-from .serializers import PrayerTimeSerializer  # Импортируйте сериализатор
+from .models import PrayerTime, DiaryEntry, Holiday
+from .permissions import IsAdminOrReadOnly
+from .serializers import PrayerTimeSerializer, DiaryEntrySerializer, HolidaySerializer
 
 
 class PrayerTimeView(generics.RetrieveAPIView):
-    serializer_class = PrayerTimeSerializer  # Укажите класс сериализатора
+    serializer_class = PrayerTimeSerializer
 
     def get(self, request, *args, **kwargs):
         latitude = 42.87  # Широта
@@ -39,3 +39,28 @@ class PrayerTimeView(generics.RetrieveAPIView):
         # Сериализуем объект PrayerTime и возвращаем его
         serializer = self.get_serializer(prayer_time)
         return Response(serializer.data)
+
+
+class DiaryEntryListCreateView(generics.ListCreateAPIView):
+    queryset = DiaryEntry.objects.all()
+    serializer_class = DiaryEntrySerializer
+
+
+class DiaryEntryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DiaryEntry.objects.all()
+    serializer_class = DiaryEntrySerializer
+
+
+class HolidayListCreateView(generics.ListCreateAPIView):
+    queryset = Holiday.objects.all()
+    serializer_class = HolidaySerializer
+    permission_classes = [IsAdminOrReadOnly]  # Применить пользовательское право доступа
+
+
+class HolidayDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Holiday.objects.all()
+    serializer_class = HolidaySerializer
+    permission_classes = [IsAdminOrReadOnly]  # Применить пользовательское право доступа
+
+
+
