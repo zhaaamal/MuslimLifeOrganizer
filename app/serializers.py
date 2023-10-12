@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PrayerTime, DiaryEntry, MyUser, Holiday
+from .models import PrayerTime, DiaryEntry, MyUser, Holiday, ToDoTask, FastingRecord
 
 
 class MyUserSerializer(serializers.ModelSerializer):
@@ -27,3 +27,14 @@ class HolidaySerializer(serializers.ModelSerializer):
         model = Holiday
         fields = '__all__'
 
+
+class ToDoTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ToDoTask
+        fields = '__all__'
+
+
+class FastingRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FastingRecord
+        fields = '__all__'

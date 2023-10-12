@@ -21,15 +21,13 @@ class ToDoTask(models.Model):
     due_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    prayer_time = models.TimeField()  # Поле для времени намаза
 
 
 # Модель для записей о постах
 class FastingRecord(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.PROTECT)  # Связь с пользователем
     date = models.DateField()
-    missed_days = models.PositiveIntegerField()
-    made_up_days = models.PositiveIntegerField()
+    fasted = models.BooleanField(default=True)
 
 
 # Дополнительные модели для календаря праздников и времени намаза
