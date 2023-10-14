@@ -19,6 +19,7 @@ class MyUserAdmin(UserAdmin):
     )
     search_fields = ('username', 'email')
     ordering = ('username',)
+    readonly_fields = ('is_staff', )
 
 
 admin.site.register(MyUser, MyUserAdmin)

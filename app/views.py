@@ -1,8 +1,8 @@
-from rest_framework import generics
+from rest_framework import generics, views, status
 from rest_framework.response import Response
 from datetime import datetime
 import praytimes
-from .models import PrayerTime, DiaryEntry, Holiday, ToDoTask, FastingRecord
+from .models import PrayerTime, DiaryEntry, Holiday, ToDoTask, FastingRecord, MyUser
 from .permissions import IsAdminOrReadOnly
 from .serializers import PrayerTimeSerializer, DiaryEntrySerializer, HolidaySerializer, ToDoTaskSerializer, \
     FastingRecordSerializer
@@ -79,7 +79,26 @@ class FastingRecordListCreateView(generics.ListCreateAPIView):
 
 
 class FastingRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = FastingRecord.objects.filter(datetime=datetime)
+    queryset = FastingRecord.objects.all()
     serializer_class = FastingRecordSerializer
 
 
+class FastingDebtsView(views.APIView):
+    def get(self, request, format=None):
+        user = request.user.id
+        fasting_records = FastingRecord.objects.filter(user=user)
+
+        total_debts = 0
+        debts_in_dates = {}
+
+        for record in fasting_records:
+            if not record.fasted:
+                total_debts += 1
+                debts_in_dates[record.date] = True
+
+        response_data = {
+            'total_debts': total_debts,
+            'debts_in_dates': debts_in_dates
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)

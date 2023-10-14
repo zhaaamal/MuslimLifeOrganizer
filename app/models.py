@@ -27,7 +27,7 @@ class ToDoTask(models.Model):
 class FastingRecord(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.PROTECT)  # Связь с пользователем
     date = models.DateField()
-    fasted = models.BooleanField(default=True)
+    fasted = models.BooleanField()
 
 
 # Дополнительные модели для календаря праздников и времени намаза
