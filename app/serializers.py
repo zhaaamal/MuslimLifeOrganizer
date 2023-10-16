@@ -38,3 +38,12 @@ class FastingRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = FastingRecord
         fields = '__all__'
+
+
+class FastingDebtSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.username')
+    fasted = serializers.BooleanField()
+
+    class Meta:
+        model = FastingRecord
+        fields = ['user', 'date', 'fasted']

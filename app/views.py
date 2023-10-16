@@ -1,11 +1,14 @@
-from rest_framework import generics, views, status
+from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.pagination import LimitOffsetPagination
+
 from datetime import datetime
 import praytimes
+
 from .models import PrayerTime, DiaryEntry, Holiday, ToDoTask, FastingRecord, MyUser
 from .permissions import IsAdminOrReadOnly
 from .serializers import PrayerTimeSerializer, DiaryEntrySerializer, HolidaySerializer, ToDoTaskSerializer, \
-    FastingRecordSerializer
+    FastingRecordSerializer, FastingDebtSerializer
 
 
 class PrayerTimeView(generics.RetrieveAPIView):
@@ -44,6 +47,7 @@ class PrayerTimeView(generics.RetrieveAPIView):
 class DiaryEntryListCreateView(generics.ListCreateAPIView):
     queryset = DiaryEntry.objects.all()
     serializer_class = DiaryEntrySerializer
+    pagination_class = LimitOffsetPagination
 
 
 class DiaryEntryDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -52,20 +56,28 @@ class DiaryEntryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class HolidayListCreateView(generics.ListCreateAPIView):
-    queryset = Holiday.objects.all()
     serializer_class = HolidaySerializer
-    permission_classes = [IsAdminOrReadOnly]  # Применить пользовательское право доступа
+
+    def get_queryset(self):
+        queryset = Holiday.objects.all()
+        name = self.request.query_params.get('name')
+        if name is not None:
+            queryset = queryset.filter(name=name)
+
+        return queryset
+
+    pagination_class = LimitOffsetPagination
 
 
 class HolidayDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Holiday.objects.all()
     serializer_class = HolidaySerializer
-    permission_classes = [IsAdminOrReadOnly]  # Применить пользовательское право доступа
 
 
 class ToDoTaskListCreateView(generics.ListCreateAPIView):
     queryset = ToDoTask.objects.all()
     serializer_class = ToDoTaskSerializer
+    pagination_class = LimitOffsetPagination
 
 
 class ToDoTaskDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -74,8 +86,17 @@ class ToDoTaskDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class FastingRecordListCreateView(generics.ListCreateAPIView):
-    queryset = FastingRecord.objects.all()
     serializer_class = FastingRecordSerializer
+
+    def get_queryset(self):
+        queryset = FastingRecord.objects.all()
+        date = self.request.query_params.get('date')
+        if date is not None:
+            queryset = queryset.filter(date__gte=date)
+
+        return queryset
+
+    pagination_class = LimitOffsetPagination
 
 
 class FastingRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -83,22 +104,13 @@ class FastingRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = FastingRecordSerializer
 
 
-class FastingDebtsView(views.APIView):
-    def get(self, request, format=None):
-        user = request.user.id
-        fasting_records = FastingRecord.objects.filter(user=user)
+class FastingDebtView(generics.ListAPIView):
+    serializer_class = FastingDebtSerializer
 
-        total_debts = 0
-        debts_in_dates = {}
+    def get_queryset(self):
+        queryset = FastingRecord.objects.all()
+        user = self.request.user.id
+        return queryset
 
-        for record in fasting_records:
-            if not record.fasted:
-                total_debts += 1
-                debts_in_dates[record.date] = True
+    pagination_class = LimitOffsetPagination
 
-        response_data = {
-            'total_debts': total_debts,
-            'debts_in_dates': debts_in_dates
-        }
-
-        return Response(response_data, status=status.HTTP_200_OK)

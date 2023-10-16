@@ -22,12 +22,18 @@ class ToDoTask(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.user
+
 
 # Модель для записей о постах
 class FastingRecord(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.PROTECT)  # Связь с пользователем
     date = models.DateField()
     fasted = models.BooleanField()
+
+    def __str__(self):
+        return f"{self.user}\n, {self.date} : {self.fasted}"
 
 
 # Дополнительные модели для календаря праздников и времени намаза

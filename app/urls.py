@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import PrayerTimeView, DiaryEntryListCreateView, DiaryEntryDetailView,\
     HolidayListCreateView, HolidayDetailView, ToDoTaskListCreateView, ToDoTaskDetailView, FastingRecordListCreateView, \
-    FastingRecordDetailView, FastingDebtsView
+    FastingRecordDetailView, FastingDebtView
 
 urlpatterns = [
     path('prayer-time/', PrayerTimeView.as_view(), name='prayer-time'),
@@ -13,6 +13,6 @@ urlpatterns = [
     path('task-list/<int:pk>/', ToDoTaskDetailView.as_view(), name='task-detail'),
     path('fasting-records/', FastingRecordListCreateView.as_view(), name='fastingrecord-list-create'),
     path('fasting-records/<int:pk>/', FastingRecordDetailView.as_view(), name='fastingrecord-detail'),
-    path('fasting-debts/', FastingDebtsView.as_view(), name='fastingdebts'),
+    path('fasting-debts/', FastingDebtView.as_view(), name='fastingdebts'),
 ]
 
